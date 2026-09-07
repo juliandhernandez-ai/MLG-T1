@@ -1,0 +1,200 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}   % Permite tildes y ñ
+\usepackage[spanish]{babel}   % Idioma español
+\usepackage{amsmath, amssymb} % Ecuaciones y símbolos matemáticos
+\usepackage{geometry}         % Para ajustar márgenes (opcional)
+\geometry{a4paper, margin=2.5cm}
+
+\title{Taller 1: Distribución geométrica \LaTeX}
+\author{Julián Hernández}
+\date{7 de septiembre de 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Introducción}
+En el presente documento desarrollo de manera rigurosa y detallada el ejercicio propuesto sobre la distribución geométrica, su pertenencia a la familia exponencial, la estimación máximo verosímil bajo un modelo con enlace logarítmico y la obtención de la varianza asintótica. 
+
+\section{Veamos que Y pertenece a la familia exponencial y determinemos  $\mu$ , $V(\mu)$}
+
+Sea $Y \sim \text{GEO}(\pi)$ con función de masa de probabilidad:
+\begin{equation}
+f(y;\pi) = \pi (1-\pi)^{y-1}, \qquad y = 1,2,\ldots
+\end{equation}
+
+Para mostrar que pertenece a la familia exponencial, la reescribo tomando exponencial y logaritmo:
+\begin{align}
+f(y;\pi) &= \exp\left\{\log \pi + (y-1)\log(1-\pi)\right\} \nonumber \\
+         &= \exp\left\{ y\log(1-\pi) + \log \pi - \log(1-\pi) \right\}.
+\end{align}
+
+Defino el parámetro natural o canónico $\theta$ como:
+\begin{equation}
+\theta = \log(1-\pi).
+\end{equation}
+De aquí, $\pi = 1 - e^\theta$. Sustituyendo en la expresión anterior:
+\begin{equation}
+\log \pi - \log(1-\pi) = \log(1-e^\theta) - \theta.
+\end{equation}
+Por tanto, la densidad se expresa en la forma canónica:
+\begin{equation}
+f(y;\theta) = \exp\left\{ y\theta + \log(1-e^\theta) - \theta \right\}.
+\end{equation}
+Identifico entonces $c(\theta) = \log(1-e^\theta) - \theta$ y $a(y)=y$, con lo que queda:
+\begin{equation}
+f(y;\theta) = \exp\left\{ y\theta + c(\theta) \right\},
+\end{equation}
+que es la forma de una familia exponencial natural. Así queda demostrado que $Y$ pertenece a la familia exponencial.
+
+Para una familia exponencial de la forma (6), se cumplen las siguientes propiedades:
+\begin{equation}
+\mathbb{E}[Y] = -c'(\theta), \qquad \text{Var}(Y) = -c''(\theta).
+\end{equation}
+
+Calculo la primera derivada de $c(\theta)$:
+\begin{align}
+c'(\theta) &= \frac{-e^\theta}{1-e^\theta} - 1 = -\frac{e^\theta}{1-e^\theta} - 1 \\
+           &= -\frac{e^\theta + 1 - e^\theta}{1-e^\theta} = -\frac{1}{1-e^\theta}.
+\end{align}
+Por lo tanto,
+\begin{equation}
+\mu = \mathbb{E}[Y] = -c'(\theta) = \frac{1}{1-e^\theta}.
+\end{equation}
+Dado que $e^\theta = 1-\pi$, se obtiene el resultado conocido:
+\begin{equation}
+\mu = \frac{1}{\pi}.
+\end{equation}
+
+Ahora, la segunda derivada:
+\begin{equation}
+c''(\theta) = \frac{e^\theta}{(1-e^\theta)^2}.
+\end{equation}
+Así,
+\begin{equation}
+\text{Var}(Y) = -c''(\theta) = -\frac{e^\theta}{(1-e^\theta)^2}.
+\end{equation}
+Como $\pi = 1 - e^\theta$ y $1-e^\theta = \pi$, entonces:
+\begin{equation}
+\text{Var}(Y) = \frac{1-\pi}{\pi^2}.
+\end{equation}
+
+Finalmente, expreso la varianza en función de la media $\mu = 1/\pi$. Despejando $\pi = 1/\mu$, sustituyo:
+\begin{equation}
+V(\mu) = \frac{1 - 1/\mu}{(1/\mu)^2} = \frac{(\mu-1)/\mu}{1/\mu^2} = \mu(\mu-1).
+\end{equation}
+En resumen:
+\begin{equation}
+\boxed{\mu = \frac{1}{\pi}}, \qquad \boxed{V(\mu) = \mu(\mu-1)}.
+\end{equation}
+
+\section{Especificación del modelo}
+
+El modelo propuesto establece que las observaciones $Y_i$ son independientes con distribución geométrica de parámetro $\pi_i$, y se impone la siguiente estructura sobre la media $\mu_i$:
+\begin{equation}
+\log\left(\frac{\mu_i - 1}{\mu_i}\right) = \eta_i = \alpha, \qquad i = 1,\ldots,n.
+\end{equation}
+
+Dado que $\mu_i = 1/\pi_i$, el lado izquierdo se simplifica:
+\begin{equation}
+\frac{\mu_i - 1}{\mu_i} = 1 - \frac{1}{\mu_i} = 1 - \pi_i.
+\end{equation}
+Por tanto, la ecuación del modelo equivale a:
+\begin{equation}
+\log(1-\pi_i) = \alpha.
+\end{equation}
+Aplicando exponencial:
+\begin{equation}
+1 - \pi_i = e^\alpha \quad \Longrightarrow \quad \pi_i = 1 - e^\alpha.
+\end{equation}
+Esto implica que todos los individuos comparten la misma probabilidad de éxito $\pi_i = \pi$ para todo $i$, ya que $\alpha$ es constante. Además, para que $\pi_i \in (0,1)$, se requiere $\alpha \in (-\infty, 0)$.
+
+\section{Estimador de máxima verosimilitud para $\alpha$}
+
+Construyo la función de verosimilitud $L(\alpha)$ basada en la muestra $Y_1,\ldots,Y_n$:
+\begin{equation}
+L(\alpha) = \prod_{i=1}^{n} \pi_i (1-\pi_i)^{y_i-1}.
+\end{equation}
+Sustituyendo $\pi_i = 1 - e^\alpha$, obtengo:
+\begin{align}
+L(\alpha) &= \prod_{i=1}^{n} (1 - e^\alpha) \left(e^\alpha\right)^{y_i-1} \\
+          &= (1 - e^\alpha)^n \cdot e^{\alpha \sum_{i=1}^n (y_i - 1)}.
+\end{align}
+
+La función de log-verosimilitud $\ell(\alpha) = \log L(\alpha)$ es:
+\begin{align}
+\ell(\alpha) &= n\log(1 - e^\alpha) + \alpha \sum_{i=1}^n (y_i - 1) \\
+             &= n\log(1 - e^\alpha) + \alpha \sum_{i=1}^n y_i - n\alpha.
+\end{align}
+
+Derivo con respecto a $\alpha$ e igualo a cero para maximizar:
+\begin{equation}
+\frac{d\ell(\alpha)}{d\alpha} = n \cdot \frac{-e^\alpha}{1-e^\alpha} + \sum_{i=1}^n y_i - n = 0.
+\end{equation}
+Defino la media muestral $\bar{y} = \frac{1}{n}\sum_{i=1}^n y_i$. Dividiendo por $n$:
+\begin{equation}
+-\frac{e^\alpha}{1-e^\alpha} + \bar{y} - 1 = 0.
+\end{equation}
+Reordenando:
+\begin{equation}
+\bar{y} - 1 = \frac{e^\alpha}{1-e^\alpha}.
+\end{equation}
+Resuelvo para $e^\alpha$:
+\begin{align}
+(\bar{y} - 1)(1 - e^\alpha) &= e^\alpha, \\
+\bar{y} - 1 - (\bar{y} - 1)e^\alpha &= e^\alpha, \\
+\bar{y} - 1 &= \bar{y} e^\alpha.
+\end{align}
+Por tanto:
+\begin{equation}
+e^{\hat{\alpha}} = \frac{\bar{y} - 1}{\bar{y}}.
+\end{equation}
+Aplicando logaritmo, el estimador de máxima verosimilitud es:
+\begin{equation}
+\boxed{\hat{\alpha} = \log\left(\frac{\bar{y} - 1}{\bar{y}}\right)}.
+\end{equation}
+Este estimador existe siempre que $\bar{y} > 1$, condición que se cumple asintóticamente si $\pi > 0$, ya que $\mathbb{E}[Y] = 1/\pi > 1$.
+
+\section{Varianza asintótica del estimador $\hat{\alpha}$}
+
+Para obtener la varianza asintótica, calculo la segunda derivada de la log-verosimilitud:
+\begin{align}
+\frac{d^2\ell(\alpha)}{d\alpha^2} &= -n \cdot \frac{e^\alpha(1-e^\alpha) - e^\alpha(-e^\alpha)}{(1-e^\alpha)^2} \\
+                                  &= -n \cdot \frac{e^\alpha}{(1-e^\alpha)^2}.
+\end{align}
+Esta expresión no depende de los datos $Y_i$, sino únicamente de $\alpha$. Por lo tanto, la información de Fisher para una muestra de tamaño $n$ es:
+\begin{equation}
+I_n(\alpha) = -\mathbb{E}\left[\frac{d^2\ell(\alpha)}{d\alpha^2}\right] = n \cdot \frac{e^\alpha}{(1-e^\alpha)^2}.
+\end{equation}
+
+Por las propiedades asintóticas de los estimadores máximo-verosímiles:
+\begin{equation}
+\sqrt{n}(\hat{\alpha} - \alpha) \xrightarrow{d} \mathcal{N}\left(0, \frac{1}{\lim_{n\to\infty} \frac{1}{n} I_n(\alpha)}\right).
+\end{equation}
+La varianza asintótica de $\hat{\alpha}$ es el inverso de la información de Fisher:
+\begin{equation}
+\text{Var}_{\text{as}}(\hat{\alpha}) = \frac{1}{I_n(\alpha)} = \frac{(1-e^\alpha)^2}{n e^\alpha}.
+\end{equation}
+
+Expreso este resultado en términos del parámetro original $\pi$. Como $e^\alpha = 1-\pi$ y $1-e^\alpha = \pi$, sustituyendo:
+\begin{equation}
+\boxed{\text{Var}_{\text{as}}(\hat{\alpha}) = \frac{\pi^2}{n(1-\pi)}}.
+\end{equation}
+O alternativamente, en función de la media $\mu = 1/\pi$:
+\begin{equation}
+\text{Var}_{\text{as}}(\hat{\alpha}) = \frac{1}{n\mu(\mu-1)} = \frac{1}{n V(\mu)}.
+\end{equation}
+
+\textbf{Comentario:} La varianza asintótica depende inversamente del tamaño muestral $n$, lo cual es consistente con la consistencia del estimador. Cuando $\pi \to 1$ (es decir, $\mu \to 1$), la varianza diverge, indicando inestabilidad en la estimación cerca del borde del espacio paramétrico. Por el contrario, cuando $\pi \to 0$ ($\mu \to \infty$), la varianza tiende a 0, reflejando mayor precisión.
+
+\section{Aplicación del modelo a un fenómeno real}
+
+El modelo planteado, donde $\log(1-\pi_i) = \alpha$ y por tanto $\pi_i$ es constante para todas las observaciones, resulta adecuado para describir experimentos o procesos en los que las condiciones no cambian y no existen covariables que afecten la probabilidad de éxito. 
+
+Un ejemplo concreto es el \textbf{número de intentos necesarios hasta lograr la primera venta en un centro de atención telefónica}, asumiendo que la tasa de conversión $\pi$ se mantiene fija durante un turno de trabajo (sin considerar la hora del día o el tipo de cliente). Otro fenómeno clásico es el \textbf{número de lanzamientos de una moneda sesgada hasta obtener la primera cara}, donde la probabilidad de cara es constante.
+
+En estudios de \textbf{fiabilidad o supervivencia}, este modelo puede emplearse para modelar el número de ciclos de estrés hasta la primera falla de un componente mecánico, siempre que el componente no envejezca (falta de memoria) y la probabilidad de falla por ciclo sea constante. Dado que el modelo impone un $\alpha$ fijo, se asume que todos los elementos ensayados son idénticos e independientes, lo cual es válido en experimentos controlados de laboratorio o en procesos de manufactura con especificaciones homogéneas.
+
+\end{document}
+
+
